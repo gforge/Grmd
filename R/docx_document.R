@@ -179,6 +179,9 @@ prFtpHeaderStyle <- function(output_str, h1_style, other_h_style){
 prFtpScriptRemoval <- function(output_str){
   start_scripts <- grep("<script", output_str)
   end_scripts <- grep("</script", output_str)
+  if (length(start_scripts) == 0)
+    return(output_str)
+
   rows_2_exclude <-
     unlist(lapply(1:length(start_scripts), FUN = function(x) -1*start_scripts[x]:end_scripts[x]))
   return(output_str[rows_2_exclude])
