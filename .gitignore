@@ -6,3 +6,9 @@
 
 # R data files from past sessions
 .Rdata
+.Rproj.user
+
+# Some test files
+tests/visual_tests/FTP_test/FTP_test_files*
+*.html
+*.md
