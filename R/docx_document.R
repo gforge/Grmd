@@ -2,24 +2,37 @@
 #'
 #' This function adds the option of having adaptations needed for seemless integration with
 #' MS Word for importing html-documents in the .docx-format. The advantage of html documents is
-#' the ability to create advanced formatting frequently needed in publications
-#' and that is available in the \code{\link{htmlTable}} function. You can view
+#' the ability to create advanced formatting frequently needed in medical publications
+#' and that is available in the \code{\link[Gmisc]{htmlTable}} function. You can view
 #' \href{http://gforge.se/2014-07/fast-track-publishing-using-rmarkdown}{the series}
 #' for more details regarding how to achieve
 #' fast-track-publishing (ftp) together with knitr.
 #'
+#' If you want to get equations into Word the currently best way is to
+#' use the \code{\link[rmarkdown]{word_document}} format.
+#'
 #' @param ... Passed onto \code{\link[rmarkdown]{html_document}}.
-#' @param css The CSS if other that the default within the package
 #' @param self_contained Overrides the default \code{TRUE} for
 #'  \code{\link[rmarkdown]{html_document}} to \code{FALSE} as
 #'  LibreOffice can't hangs on long lines such as the base64
 #'  images included in the self-contained version.
+#' @param mathjax The advanced mathjax does not work with with
+#'  Word/LibreOffice.
+#' @param theme No theme should be used for the output as the
+#'  custom CSS should take care of everything.
+#' @param highlight By default turn off highlighting as scripts
+#'  are difficult to import. This does though work somewhat OK when
+#'  copy-pasting from the web-browser.
+#' @param css The CSS if other that the default within the package
 #' @param h1_style You can choose any css style formatting here that you
 #'  want to be applied to all h1 elements. Note: this is only applied
 #'  if LibreOffice_adapt is \code{TRUE}.
 #' @param other_h_style This is the formatting applied to any other
 #'  h elements not included to the first. Note: this is only applied
 #'  if LibreOffice_adapt is \code{TRUE}.
+#' @param remove_scripts \code{TRUE} if <script></script> tags are
+#'  to be removed. These are usually not compatible with Word-processors
+#'  and should therefore in most cases be stripped from the document.
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}
 #' @export
 #' @author Max Gordon
@@ -29,18 +42,23 @@
 #' \dontrun{
 #' ---
 #' title: "Test"
-#' author: "MG"
-#' date: "Sunday, July 13, 2014"
+#' author: "Max Gordon"
 #' output:
-#'   Gmisc::rmd_ftp
+#'   Grmd::docx_document
 #' ---
 #' }
 #' @importFrom rmarkdown html_document
 docx_document <- function(...,
-                         css = "rmarkdown/docx.css",
-                         self_contained = FALSE,
-                         h1_style="margin: 24pt 0pt 0pt 0pt;",
-                         other_h_style="margin: 10pt 0pt 0pt 0pt;") {
+                          # Default options for ftp
+                          self_contained = FALSE,
+                          mathjax = NULL,
+                          theme = NULL,
+                          highlight = NULL,
+                          # docx_specific
+                          css = "rmarkdown/docx.css",
+                          h1_style="margin: 24pt 0pt 0pt 0pt;",
+                          other_h_style="margin: 10pt 0pt 0pt 0pt;",
+                          remove_scripts = TRUE) {
 
   if (css == "rmarkdown/docx.css"){
     css <- system.file(css, package = "Grmd")
@@ -53,7 +71,7 @@ docx_document <- function(...,
                         " You may want to have a YAML section that looks something like:",
                         "\n---",
                         "\noutput:",
-                        "\n  Gmisc::ftp_document:",
+                        "\n  Grmd::docx_document:",
                         "\n    css: \"", paste(alt_css, collapse = "\", \""), "\"",
                         "\n---")
     }else{
@@ -73,7 +91,10 @@ docx_document <- function(...,
   output_ret_val <-
     rmarkdown::html_document(...,
                              css = css,
-                             self_contained=self_contained)
+                             mathjax = mathjax,
+                             theme = theme,
+                             highlight = highlight,
+                             self_contained = self_contained)
 
   output_ret_val$post_processor_old <-
     output_ret_val$post_processor
@@ -105,12 +126,14 @@ docx_document <- function(...,
                          h1_style=h1_style,
                          other_h_style=h1_style)
 
-      output_str <-
-        prFtpScriptRemoval(output_str)
+      if (remove_scripts){
+        output_str <-
+          prFtpScriptRemoval(output_str)
 
 
-      output_str <-
-        prFtpOtherRemoval(output_str)
+        output_str <-
+          prFtpOtherRemoval(output_str)
+      }
 
       writeLines(output_str, output_file, useBytes = TRUE)
       return(output_file)
@@ -168,8 +191,11 @@ prFtpScriptRemoval <- function(output_str){
 #' @return string Returns without the script elements
 prFtpOtherRemoval <- function(output_str){
   lines_2_remove <-
-    c("<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />", # validator complains
-      "<!-- dynamically load mathjax for compatibility with --self-contained -->" # Invalid formatting --s
+    c(# html-validator complains
+      "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />",
+
+      # Invalid formatting --s although this shouldn't be in the doc. start with
+      "<!-- dynamically load mathjax for compatibility with --self-contained -->"
       )
   for (line in lines_2_remove){
     rm_line <- grep(sprintf("^%s$", line),

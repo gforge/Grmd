@@ -10,5 +10,8 @@
 
 # Some test files
 tests/visual_tests/FTP_test/FTP_test_files*
+tests/visual_tests/Highlighting_test_files*
+tests/visual_tests/MathJax_test_files*
 *.html
 *.md
+*.docx

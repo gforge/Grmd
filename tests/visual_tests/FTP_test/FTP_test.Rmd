@@ -2,8 +2,10 @@
 title: "Test"
 author: "MG"
 date: "Sunday, July 13, 2014"
+lang: en
 output:
-  Grmd::docx_document
+  Grmd::docx_document:
+    fig_caption: true
 ---
 
 ```{r Data_prep, echo=FALSE, message=FALSE, warning=FALSE}
@@ -98,7 +100,7 @@ pvalues <-
   1 - pchisq(coef(fit)^2/diag(vcov(fit)), df=1)
 ```
 
-After adjusting for the three variables, age, sex, tumor thickness and ulceration, only the latter two remained significant (p-value `r pvalueFormatter(pvalues["ulcer=Present"], sig.limit=10^-3)` and `r pvalueFormatter(pvalues["thickness"], sig.limit=10^-3)`), see table `r as.numeric(options("table_counter"))-1` and figure `r getNextFigureNo()`.
+After adjusting for the three variables, age, sex, tumor thickness and ulceration, only the latter two remained significant (p-value `r pvalueFormatter(pvalues["ulcer=Present"], sig.limit=10^-3)` and `r pvalueFormatter(pvalues["thickness"], sig.limit=10^-3)`), see table `r as.numeric(options("table_counter"))-1` and figure I.
 
 ```{r Regression_forestplot, fig.height=3, fig.width=5, fig.cap="A forest plot comparing the regression coefficients."}
 # I've adjusted the coefficient for age to be by 
@@ -119,7 +121,8 @@ forestplotRegrObj(update(fit, .~.-age+I(age/10)),
 })
 ```
 
-There was no strong indication for non-linearity for any of the continuous variables although the impact of thickness did seem to lessen above 4 mm, see figure `r getNextFigureNo()`.
+There was no strong indication for non-linearity for any of the continuous variables although the impact of thickness did seem to lessen above 4 mm, see figure II.
+
 
 ```{r spline_plot, fig.cap=plotHR_cap}
 plotHR_cap = paste0("The adjusted and unadjusted restricted cubic spline",

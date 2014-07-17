@@ -3,22 +3,33 @@
 \alias{docx_document}
 \title{Formatter wrapper for \code{\link[rmarkdown]{html_document}} facilitate easier porting to docx}
 \usage{
-docx_document(..., css = "docx.css", self_contained = FALSE,
+docx_document(..., self_contained = FALSE, mathjax = NULL, theme = NULL,
+  highlight = NULL, css = "rmarkdown/docx.css",
   h1_style = "margin: 24pt 0pt 0pt 0pt;",
-  other_h_style = "margin: 10pt 0pt 0pt 0pt;")
+  other_h_style = "margin: 10pt 0pt 0pt 0pt;", remove_scripts = TRUE)
 }
 \arguments{
   \item{...}{Passed onto
   \code{\link[rmarkdown]{html_document}}.}
-
-  \item{css}{The CSS if other that the default within the
-  package}
 
   \item{self_contained}{Overrides the default \code{TRUE}
   for \code{\link[rmarkdown]{html_document}} to
   \code{FALSE} as LibreOffice can't hangs on long lines
   such as the base64 images included in the self-contained
   version.}
+
+  \item{mathjax}{The advanced mathjax does not work with
+  with Word/LibreOffice.}
+
+  \item{theme}{No theme should be used for the output as
+  the custom CSS should take care of everything.}
+
+  \item{highlight}{By default turn off highlighting as
+  scripts are difficult to import. This does though work
+  somewhat OK when copy-pasting from the web-browser.}
+
+  \item{css}{The CSS if other that the default within the
+  package}
 
   \item{h1_style}{You can choose any css style formatting
   here that you want to be applied to all h1 elements.
@@ -29,6 +40,11 @@ docx_document(..., css = "docx.css", self_contained = FALSE,
   any other h elements not included to the first. Note:
   this is only applied if LibreOffice_adapt is
   \code{TRUE}.}
+
+  \item{remove_scripts}{\code{TRUE} if <script></script>
+  tags are to be removed. These are usually not compatible
+  with Word-processors and should therefore in most cases
+  be stripped from the document.}
 }
 \value{
 R Markdown output format to pass to
@@ -39,21 +55,26 @@ This function adds the option of having adaptations needed
 for seemless integration with MS Word for importing
 html-documents in the .docx-format. The advantage of html
 documents is the ability to create advanced formatting
-frequently needed in publications and that is available in
-the \code{\link{htmlTable}} function. You can view
+frequently needed in medical publications and that is
+available in the \code{\link[Gmisc]{htmlTable}} function.
+You can view
 \href{http://gforge.se/2014-07/fast-track-publishing-using-rmarkdown}{the
 series} for more details regarding how to achieve
 fast-track-publishing (ftp) together with knitr.
+}
+\details{
+If you want to get equations into Word the currently best
+way is to use the \code{\link[rmarkdown]{word_document}}
+format.
 }
 \examples{
 # Possible yaml configuration at the top of the Rmd doc
 \dontrun{
 ---
 title: "Test"
-author: "MG"
-date: "Sunday, July 13, 2014"
+author: "Max Gordon"
 output:
-  Gmisc::rmd_ftp
+  Grmd::docx_document
 ---
 }
 }
