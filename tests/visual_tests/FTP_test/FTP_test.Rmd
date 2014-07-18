@@ -1,11 +1,10 @@
 ---
 title: "Test"
 author: "MG"
-date: "Sunday, July 13, 2014"
-lang: en
 output:
   Grmd::docx_document:
     fig_caption: true
+    remove_scripts: false
 ---
 
 ```{r Data_prep, echo=FALSE, message=FALSE, warning=FALSE}
