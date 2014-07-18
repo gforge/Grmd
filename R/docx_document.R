@@ -64,6 +64,10 @@ docx_document <- function(...,
     css <- system.file(css, package = "Grmd")
     if (css == "")
       stop("Error locating the docx.css that should be included in the Grmd package")
+    if (!self_contained){
+      file.copy(from = css, to="docx.css", overwrite = TRUE)
+      css <- "docx.css"
+    }
   }else if(!all(sapply(css, file.exists))){
     alt_css <- list.files(pattern = ".css$")
     if (length(alt_css) > 0){
@@ -89,12 +93,12 @@ docx_document <- function(...,
 
   # call the base html_document function
   output_ret_val <-
-    rmarkdown::html_document(...,
-                             css = css,
-                             mathjax = mathjax,
-                             theme = theme,
-                             highlight = highlight,
-                             self_contained = self_contained)
+    html_document(...,
+                  css = css,
+                  mathjax = mathjax,
+                  theme = theme,
+                  highlight = highlight,
+                  self_contained = self_contained)
 
   output_ret_val$post_processor_old <-
     output_ret_val$post_processor
