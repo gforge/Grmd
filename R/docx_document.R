@@ -139,6 +139,9 @@ docx_document <- function(...,
           prFtpOtherRemoval(output_str)
       }
 
+      output_str <-
+        prFtpOtherChanges(output_str)
+
       writeLines(output_str, output_file, useBytes = TRUE)
       return(output_file)
     }
@@ -195,7 +198,7 @@ prFtpScriptRemoval <- function(output_str){
 #' Removes other unwanted lines
 #'
 #' @param output_str The input from readLines()
-#' @return string Returns without the script elements
+#' @return string Returns without the unwanted lines
 prFtpOtherRemoval <- function(output_str){
   lines_2_remove <-
     c(# html-validator complains
@@ -209,6 +212,23 @@ prFtpOtherRemoval <- function(output_str){
                     output_str)
     if (length(rm_line) == 1)
       output_str <- output_str[-rm_line]
+  }
+
+  return(output_str)
+}
+
+#' Changes lines for XML-conformity
+#'
+#' @param output_str The input from readLines()
+#' @return string Returns with changes
+prFtpOtherChanges <- function(output_str){
+  lines_2_change <-
+    c(`<meta charset="utf-8">` = '<meta charset="utf-8" />')
+  for (line in names(lines_2_change)){
+    ch_line <- grep(sprintf("^%s$", line),
+                    output_str)
+    if (length(ch_line) == 1)
+      output_str[ch_line] <- lines_2_change[line]
   }
 
   return(output_str)
