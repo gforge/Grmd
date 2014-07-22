@@ -5,6 +5,6 @@
 #' Apart from having a direct port it allows tailoring of formatters
 #' that make the conversion between html and MS Word virtually seemless.
 #'
-#' @name Grmd
+#' @name Grmd-package
 #' @docType package
 NULL
