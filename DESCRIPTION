@@ -1,6 +1,6 @@
 Package: Grmd
 Version: 0.1.1
-Date: 2014-07-18
+Date: 2014-07-22
 Title: A package for improving publishing through word-processor integration
 Author: Max Gordon <max@gforge.se>
 Maintainer: Max Gordon <max@gforge.se>
@@ -13,10 +13,10 @@ URL: http://gforge.se
 BugReports: https://github.com/gforge/Grmd/issues
 Biarch: yes
 Imports:
-    rmarkdown
-Suggests:
-    testthat,
+    rmarkdown,
     XML
+Suggests:
+    testthat
 Roxygen: list(wrap = TRUE)
 Encoding: UTF-8
 NeedsCompilation: no
