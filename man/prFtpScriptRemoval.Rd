@@ -14,4 +14,5 @@ string Returns without the script elements
 \description{
 Removes the <script>*</scrip>
 }
+\keyword{internal}
 

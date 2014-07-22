@@ -9,9 +9,10 @@ prFtpOtherRemoval(output_str)
   \item{output_str}{The input from readLines()}
 }
 \value{
-string Returns without the script elements
+string Returns without the unwanted lines
 }
 \description{
 Removes other unwanted lines
 }
+\keyword{internal}
 

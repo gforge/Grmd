@@ -33,6 +33,9 @@
 #' @param remove_scripts \code{TRUE} if <script></script> tags are
 #'  to be removed. These are usually not compatible with Word-processors
 #'  and should therefore in most cases be stripped from the document.
+#' @param force_captions Since out.width and out.height remove the option of
+#'  having captions this allows a workaround through some processing
+#'  via the XML-package
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}
 #' @export
 #' @author Max Gordon
@@ -58,7 +61,8 @@ docx_document <- function(...,
                           css = "rmarkdown/docx.css",
                           h1_style="margin: 24pt 0pt 0pt 0pt;",
                           other_h_style="margin: 10pt 0pt 0pt 0pt;",
-                          remove_scripts = TRUE) {
+                          remove_scripts = TRUE,
+                          force_captions = FALSE) {
 
   if (css == "rmarkdown/docx.css"){
     css <- system.file(css, package = "Grmd")
@@ -143,6 +147,10 @@ docx_document <- function(...,
         prFtpOtherChanges(output_str)
 
       writeLines(output_str, output_file, useBytes = TRUE)
+
+      if (force_captions){
+        prCaptionFix(output_file)
+      }
       return(output_file)
     }
 
@@ -159,6 +167,7 @@ docx_document <- function(...,
 #'  h elements not included to the first. Note: this is only applied
 #'  if LibreOffice_adapt is \code{TRUE}.
 #' @return string
+#' @keywords internal
 prFtpHeaderStyle <- function(output_str, h1_style, other_h_style){
   gsub(
     paste0('<h([0-9]+)',
@@ -183,6 +192,7 @@ prFtpHeaderStyle <- function(output_str, h1_style, other_h_style){
 #'
 #' @param output_str The input from readLines()
 #' @return string Returns without the script elements
+#' @keywords internal
 prFtpScriptRemoval <- function(output_str){
   start_scripts <- grep("<script", output_str)
   end_scripts <- grep("</script", output_str)
@@ -199,6 +209,7 @@ prFtpScriptRemoval <- function(output_str){
 #'
 #' @param output_str The input from readLines()
 #' @return string Returns without the unwanted lines
+#' @keywords internal
 prFtpOtherRemoval <- function(output_str){
   lines_2_remove <-
     c(# html-validator complains
@@ -221,6 +232,7 @@ prFtpOtherRemoval <- function(output_str){
 #'
 #' @param output_str The input from readLines()
 #' @return string Returns with changes
+#' @keywords internal
 prFtpOtherChanges <- function(output_str){
   lines_2_change <-
     c(`<meta charset="utf-8">` = '<meta charset="utf-8" />')
@@ -232,4 +244,35 @@ prFtpOtherChanges <- function(output_str){
   }
 
   return(output_str)
+}
+
+#' Fixes the caption back fro elements withou
+#'
+#' @param outFile The name of the file
+#' @return outFile The name of the file
+#' @keywords internal
+#' @import XML
+prCaptionFix <- function(outFile){
+  # Encapsulate within a try since there is a high chance of error
+  tryCatch({
+    tmp <- XML::htmlParse(outFile, encoding="utf-8", replaceEntities = FALSE)
+
+    # The caption-less images are currently located under a p-element instead of a div
+    caption_less_images <- xpathApply(tmp, "/html/body//p/img")
+    for (i in 1:length(caption_less_images)){
+      prnt <- xmlParent(caption_less_images[[i]])
+      img_clone <- xmlClone(caption_less_images[[i]])
+      replaceNodes(oldNode = prnt,
+                   newNode = newXMLNode("div",
+                                        img_clone,
+                                        newXMLNode("p",
+                                                   xmlTextNode(xmlAttrs(img_clone)["title"]),
+                                                   attrs=c(class="caption")),
+                                        attrs=c(class="figure")))
+    }
+
+    saveXML(tmp, encoding = "utf-8", file=outFile)
+  }, error=function(err)warning("Could not force captions - error occurred: '", err, "'"))
+
+  return(outFile)
 }

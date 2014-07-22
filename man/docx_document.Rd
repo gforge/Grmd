@@ -6,7 +6,8 @@
 docx_document(..., self_contained = FALSE, mathjax = NULL, theme = NULL,
   highlight = NULL, css = "rmarkdown/docx.css",
   h1_style = "margin: 24pt 0pt 0pt 0pt;",
-  other_h_style = "margin: 10pt 0pt 0pt 0pt;", remove_scripts = TRUE)
+  other_h_style = "margin: 10pt 0pt 0pt 0pt;", remove_scripts = TRUE,
+  force_captions = FALSE)
 }
 \arguments{
   \item{...}{Passed onto
@@ -45,6 +46,10 @@ docx_document(..., self_contained = FALSE, mathjax = NULL, theme = NULL,
   tags are to be removed. These are usually not compatible
   with Word-processors and should therefore in most cases
   be stripped from the document.}
+
+  \item{force_captions}{Since out.width and out.height
+  remove the option of having captions this allows a
+  workaround through some processing via the XML-package}
 }
 \value{
 R Markdown output format to pass to

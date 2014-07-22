@@ -4,7 +4,7 @@ Version 0.1.1
 -------------
 * The style docx.css is now copied to the same folder as the knitr document as it otherwise wasn't found by the browsers
 * Improved caption css
-* Added template for medical articles
+* Added template for medical articles based on the STROBE-statement
 
 Version 0.1.0
 -------------
