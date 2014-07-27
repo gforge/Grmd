@@ -260,15 +260,16 @@ prCaptionFix <- function(outFile){
     # The caption-less images are currently located under a p-element instead of a div
     caption_less_images <- xpathApply(tmp, "/html/body//p/img")
     for (i in 1:length(caption_less_images)){
-      prnt <- xmlParent(caption_less_images[[i]])
+      old_node <- xmlParent(caption_less_images[[i]])
       img_clone <- xmlClone(caption_less_images[[i]])
-      replaceNodes(oldNode = prnt,
-                   newNode = newXMLNode("div",
-                                        img_clone,
-                                        newXMLNode("p",
-                                                   xmlTextNode(xmlAttrs(img_clone)["title"]),
-                                                   attrs=c(class="caption")),
-                                        attrs=c(class="figure")))
+      new_node <- newXMLNode("div",
+                             img_clone,
+                             newXMLNode("p",
+                                        xmlAttrs(img_clone)["title"],
+                                        attrs=c(class="caption")),
+                             attrs=c(class="figure"))
+      replaceNodes(oldNode = old_node,
+                   newNode = new_node)
     }
 
     saveXML(tmp, encoding = "utf-8", file=outFile)

@@ -1,8 +1,9 @@
 ---
 title: Document
 output:
-  docx_document:
+  Grmd::docx_document:
     fig_caption: true
+    force_captions: true
 ---
 
 # Header 1
@@ -43,7 +44,7 @@ Second paragraph
 
 # Tables
 
-```{r htmlTable, results='asis', echo=FALSE}
+```{r htmlTable, results='asis', echo=FALSE, message=FALSE}
 set.seed(1)
 library(Gmisc)
 
