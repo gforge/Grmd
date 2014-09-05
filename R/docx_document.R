@@ -267,8 +267,9 @@ prFtpOtherChanges <- function(output_str){
 #' @keywords internal
 #' @import XML
 prCaptionFix <- function(outFile){
-  # Encapsulate within a try since there is a high chance of error
+  # Encapsulate within a try since there is a high risk of error
   tryCatch({
+    # Read in the full file through the html parser
     tmp <- XML::htmlParse(outFile, encoding="utf-8", replaceEntities = FALSE)
 
     # The caption-less images are currently located under a p-element instead of a div
