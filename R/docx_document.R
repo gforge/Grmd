@@ -36,6 +36,8 @@
 #' @param force_captions Since out.width and out.height remove the option of
 #'  having captions this allows a workaround through some processing
 #'  via the XML-package
+#' @param css_max_width The max width of the body element. Defaults to "40em"
+#'  if not specified. Any CSS-compliant width format works.
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}
 #' @export
 #' @author Max Gordon
@@ -62,7 +64,8 @@ docx_document <- function(...,
                           h1_style="margin: 24pt 0pt 0pt 0pt;",
                           other_h_style="margin: 10pt 0pt 0pt 0pt;",
                           remove_scripts = TRUE,
-                          force_captions = FALSE) {
+                          force_captions = FALSE,
+                          css_max_width) {
 
   if (css == "rmarkdown/docx.css"){
     css <- system.file(css, package = "Grmd")
@@ -71,6 +74,17 @@ docx_document <- function(...,
     if (!self_contained){
       file.copy(from = css, to="docx.css", overwrite = TRUE)
       css <- "docx.css"
+      if (!missing(css_max_width)){
+        css <- prSetMaxWidth(max_width = css_max_width,
+                             css_file = css)
+      }
+    }else{
+      if (!missing(css_max_width)){
+        tmp_css <- tempfile()
+        file.copy(from = css, to=tmp_css, overwrite = TRUE)
+        css <- prSetMaxWidth(max_width = css_max_width,
+                             css_file = tmp_css)
+      }
     }
   }else if(!all(sapply(css, file.exists))){
     alt_css <- list.files(pattern = ".css$")
@@ -276,4 +290,26 @@ prCaptionFix <- function(outFile){
   }, error=function(err)warning("Could not force captions - error occurred: '", err, "'"))
 
   return(outFile)
+}
+
+#' Updates the css max-width
+#'
+#' Reads the file, changes the max-width
+#' for the body element.
+#'
+#' @param max_width The new max-width css setting
+#' @param css_file The CSS file name
+#' @return \code{string} The file name
+#' @keywords internal
+prSetMaxWidth <- function(max_width, css_file){
+  content <- readLines(css_file)
+  content <-
+    sub(pattern = "max-width: 40em; /* Body */",
+        replacement =  sprintf("max-width: %s; /* Body */",
+                               max_width),
+        x = content,
+        fixed=TRUE)
+  writeLines(text = content,
+             con = css_file)
+  return(css_file)
 }

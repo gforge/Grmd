@@ -7,7 +7,7 @@ docx_document(..., self_contained = FALSE, mathjax = NULL, theme = NULL,
   highlight = NULL, css = "rmarkdown/docx.css",
   h1_style = "margin: 24pt 0pt 0pt 0pt;",
   other_h_style = "margin: 10pt 0pt 0pt 0pt;", remove_scripts = TRUE,
-  force_captions = FALSE)
+  force_captions = FALSE, css_max_width)
 }
 \arguments{
   \item{...}{Passed onto
@@ -50,6 +50,9 @@ docx_document(..., self_contained = FALSE, mathjax = NULL, theme = NULL,
   \item{force_captions}{Since out.width and out.height
   remove the option of having captions this allows a
   workaround through some processing via the XML-package}
+
+  \item{css_max_width}{The max width of the body element.
+  Defaults to "40em" if not specified.}
 }
 \value{
 R Markdown output format to pass to

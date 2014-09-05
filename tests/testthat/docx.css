@@ -12,7 +12,7 @@ body  {
    background-color: white;
    padding-top: 1em;
    margin: auto;
-   max-width: 35em;
+   max-width: 40em; /* Body */
 }
 
 /* Note that no math currently gets imported into

@@ -1,8 +1,15 @@
 NEWS for Grmd
 
+Version 0.1.2
+-------------
+* Added the css_max_width option that can be used to change the white space to the
+  left/right. Convenient as the verbatim output can be rather wide and require
+  more space than what the default 40em allows.
+
 Version 0.1.1
 -------------
-* The style docx.css is now copied to the same folder as the knitr document as it otherwise wasn't found by the browsers
+* The style docx.css is now copied to the same folder as the knitr document as
+  it otherwise wasn't found by the browsers
 * Improved caption css
 * Added template for medical articles based on the STROBE-statement
 
