@@ -1,3 +1,5 @@
+**Package deprecated**: As of Gmisc 1.2 all the Grmd functions are included.
+
 Grmd
 ====
 
