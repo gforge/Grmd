@@ -1,5 +1,9 @@
 NEWS for Grmd
 
+Version 0.1.3
+-------------
+* Minor bug fixes
+
 Version 0.1.2
 -------------
 * Added the css_max_width option that can be used to change the white space to the
